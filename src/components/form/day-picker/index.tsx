@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { Icon, PrimaryButton, TextInput, Text } from 'components';
+import { Icon, PrimaryButton, TextInput, Text, TextInputProps } from 'components';
 import * as React from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import { DayPickerInputProps, DayPickerProps } from 'react-day-picker/types/Props';
@@ -9,8 +9,7 @@ import createAutoCorrectedDatePipe from 'text-mask-addons/dist/createAutoCorrect
 import { useMode, useTheme } from 'utils/hooks';
 import { DateUtils } from 'react-day-picker';
 import { setHours, setMinutes, format as dateFnsFormat, parse as dateFnsParse } from 'date-fns';
-import { TextInputProps } from '../text-input';
-import { InputComponent, WrapperProps } from '../../../utils/types';
+import { InputComponent, WrapperProps } from 'utils/types';
 import { StyledDayPicker } from './style';
 import 'react-day-picker/lib/style.css';
 
@@ -56,7 +55,6 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
       format = defaultFormat,
       onChange,
       isTimePicker,
-      value,
       title,
       placeholder = format,
       iconAfter = Icon.icons.calendar,
@@ -83,6 +81,8 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
     const [day, setDay] = React.useState(defaultDay || new Date());
 
     const handleDayChange = (selectedDay): void => {
+      // const input = dayPickerInput.getInput();
+
       setDay(selectedDay);
     };
 
@@ -91,12 +91,12 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
     }, [day]);
 
     const OverlayComponent = ({
-      children,
-      // got 2 default props from rest operator (avoid setting custom props to html element)
-      classNames,
-      selectedDay,
-      ...overlayComponentProps
-    }: {
+                                children,
+                                // got 2 default props from rest operator (avoid setting custom props to html element)
+                                classNames,
+                                selectedDay,
+                                ...overlayComponentProps
+                              }: {
       children: React.ReactNode;
       classNames: { [key: string]: any };
       selectedDay: Date;
@@ -115,32 +115,32 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
       useOutsideClick(overlayCompRef, isTimePicker ? null : hideDayPicker);
 
       return (
-        <div className="overlay" {...overlayComponentProps} ref={overlayCompRef}>
+        <div className='overlay' {...overlayComponentProps} ref={overlayCompRef}>
           {children}
           {isTimePicker ? (
-            <div className="footer">
+            <div className='footer'>
               <MaskedInput
-                id="my-input-id"
+                id='my-input-id'
                 render={(customRef, restProps): JSX.Element => (
                   <TextInput
-                    id="mask"
-                    name="mask"
-                    title="Time"
-                    key="mask"
+                    id='mask'
+                    name='mask'
+                    title='Time'
+                    key='mask'
                     iconAfter={Icon.icons.clock}
                     inputRef={customRef}
                     {...restProps}
                   />
                 )}
                 mask={[/[0-2]/, /[0-9]/, ':', /[0-5]/, /[0-9]/]}
-                placeholder="--:--"
+                placeholder='--:--'
                 pipe={createAutoCorrectedDatePipe('HH:MM')}
                 onChange={(e): void => {
                   setDateTime(e.target.value);
                 }}
                 value={dateTime}
               />
-              <PrimaryButton className="submitTime" type="button" onClick={submitAndClose}>
+              <PrimaryButton className='submitTime' type='button' onClick={submitAndClose}>
                 {saveLabel}
               </PrimaryButton>
             </div>
@@ -149,6 +149,8 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
       );
     };
 
+// eslint-disable-next-line no-debugger
+// debugger;
     return (
       <StyledDayPicker
         className={cx('dayPickerInput')}
@@ -159,12 +161,12 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
         {...wrapperProps}
       >
         {title && (
-          <Text weight={theme.typography.weights.bold} size={theme.typography.sizes.m} className="title">
+          <Text weight={theme.typography.weights.bold} size={theme.typography.sizes.m} className='title'>
             {title}
           </Text>
         )}
         {subTitle && (
-          <Text size={theme.typography.sizes.xs} className="subtitle">
+          <Text size={theme.typography.sizes.xs} className='subtitle'>
             {subTitle}
           </Text>
         )}
@@ -182,16 +184,44 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
             weekdaysShort: dayPickerProps?.weekdaysShort || WEEKDAYS_SHORT_DEFAULT,
             firstDayOfWeek: dayPickerProps?.firstDayOfWeek || 1, // Monday as default value
             locale: dayPickerProps?.locale || 'en',
-            ...dayPickerProps,
+          ...dayPickerProps,
           }}
           onDayChange={handleDayChange}
           placeholder={placeholder}
-          value={value}
+          // value={day}
           keepFocus={false}
           {...props}
-          component={React.forwardRef<HTMLDivElement, TextInputProps>((inputComponentProps, wrapRef) => (
-            <TextInput ref={wrapRef} iconAfter={iconAfter} error={error} {...inputComponentProps} {...inputProps} />
-          ))}
+          // component={(inputComponentProps): JSX.Element => {
+          //   // eslint-disable-next-line no-debugger
+          //   // debugger;
+          //   const {
+          //     // onBlur,
+          //     // onFocus,
+          //     // onClick,
+          //     // onKeyDown,
+          //     // onKeyUp,
+          //     // onChange,
+          //     // value,
+          //     // placeholder,
+          //   } = inputComponentProps;
+          //   return (
+          //     // <input placeholder={placeholder} onChange={onChange} value={value} {...inputProps} />
+          //     <input {...inputComponentProps} {...inputProps} />
+          //     // <TextInput
+          //     //   iconAfter={iconAfter}
+          //     //   error={error}
+          //     //   onBlur={onBlur}
+          //     //   onFocus={onFocus}
+          //     // onClick={onClick}
+          //     // onKeyDown={onKeyDown}
+          //     // onKeyUp={onKeyUp}
+          //     // onChange={onChange}
+          //     // value={value}
+          //     // placeholder={placeholder}
+          //     // {/*{...inputProps}*/}
+          //     // />
+          //   );
+          // }}
         />
       </StyledDayPicker>
     );
