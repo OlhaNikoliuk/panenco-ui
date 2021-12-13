@@ -21,6 +21,7 @@ export default decorator('DayPicker', DayPickerDocs, README).add('DayPicker', ()
         style={ { justifyContent: 'space-around', alignItems: 'flex-start' } }>
         <Col s='12' m='12' l='12'>
           <DayPicker
+            value={value}
             subTitle='Start date'
             onChange={ handleChange }
             format='MM/dd/yyyy'

@@ -12,6 +12,9 @@ import { setHours, setMinutes, format as dateFnsFormat, parse as dateFnsParse } 
 import { InputComponent, WrapperProps } from 'utils/types';
 import { StyledDayPicker } from './style';
 import 'react-day-picker/lib/style.css';
+import CustomDateUtils from '../date-input/date-utils';
+
+const utils = new CustomDateUtils();
 
 function parseDate(str, format, locale): Date | undefined {
   const parsed = dateFnsParse(str, format, new Date());
@@ -39,6 +42,7 @@ export interface PickerProps extends DayPickerInputProps, InputComponent {
   saveLabel?: string;
   dayPickerProps?: DayPickerProps;
   defaultDay?: Date;
+  value: any;
 }
 
 const transformTime = (): string => {
@@ -65,6 +69,7 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
       inputProps,
       dayPickerProps,
       defaultDay,
+      value,
       ...props
     }: PickerProps,
     ref,
@@ -79,6 +84,7 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
     };
 
     const [day, setDay] = React.useState(defaultDay || new Date());
+    const [innerInputValue, setInnerInputValue] = React.useState(utils.getDate(value, format));
 
     const handleDayChange = (selectedDay): void => {
       // const input = dayPickerInput.getInput();
@@ -184,44 +190,47 @@ export const DayPicker = React.forwardRef<HTMLDivElement, PickerProps>(
             weekdaysShort: dayPickerProps?.weekdaysShort || WEEKDAYS_SHORT_DEFAULT,
             firstDayOfWeek: dayPickerProps?.firstDayOfWeek || 1, // Monday as default value
             locale: dayPickerProps?.locale || 'en',
-          ...dayPickerProps,
+            ...dayPickerProps,
           }}
           onDayChange={handleDayChange}
           placeholder={placeholder}
           // value={day}
           keepFocus={false}
           {...props}
-          // component={(inputComponentProps): JSX.Element => {
-          //   // eslint-disable-next-line no-debugger
-          //   // debugger;
-          //   const {
-          //     // onBlur,
-          //     // onFocus,
-          //     // onClick,
-          //     // onKeyDown,
-          //     // onKeyUp,
-          //     // onChange,
-          //     // value,
-          //     // placeholder,
-          //   } = inputComponentProps;
-          //   return (
-          //     // <input placeholder={placeholder} onChange={onChange} value={value} {...inputProps} />
-          //     <input {...inputComponentProps} {...inputProps} />
-          //     // <TextInput
-          //     //   iconAfter={iconAfter}
-          //     //   error={error}
-          //     //   onBlur={onBlur}
-          //     //   onFocus={onFocus}
-          //     // onClick={onClick}
-          //     // onKeyDown={onKeyDown}
-          //     // onKeyUp={onKeyUp}
-          //     // onChange={onChange}
-          //     // value={value}
-          //     // placeholder={placeholder}
-          //     // {/*{...inputProps}*/}
-          //     // />
-          //   );
-          // }}
+          component={(inputComponentProps): JSX.Element => {
+            // eslint-disable-next-line no-debugger
+            // debugger;
+            const {
+              onBlur,
+              onFocus,
+              onClick,
+              onKeyDown,
+              onKeyUp,
+              // onChange,
+              // value,
+              // eslint-disable-next-line no-shadow
+              placeholder,
+            } = inputComponentProps;
+            return (
+              // <input placeholder={placeholder} onChange={onChange} value={value} {...inputProps} />
+              // <input {...inputComponentProps} {...inputProps} />
+              <TextInput
+                iconAfter={iconAfter}
+                error={error}
+                onBlur={onBlur}
+                onFocus={onFocus}
+                onClick={onClick}
+                onKeyDown={onKeyDown}
+                onKeyUp={onKeyUp}
+                onChange={(e) => {
+                  setInnerInputValue(e.target.value);
+                }}
+                value={innerInputValue}
+                placeholder={placeholder}
+                {...inputProps}
+              />
+            );
+          }}
         />
       </StyledDayPicker>
     );
